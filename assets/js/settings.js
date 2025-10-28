@@ -106,8 +106,8 @@ function renderModelImage() {
 
 function handleAddApiKey() {
   const newKey = apiKeyInput.value.trim();
-  if (!newKey.startsWith('sk-')) {
-    showToast('请输入有效的 API Key (以 sk- 开头)。', 'error');
+  if (!newKey || newKey.length < 10) {
+    showToast('请输入有效的 API Key。', 'error');
     return;
   }
 

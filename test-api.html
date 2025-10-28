@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>API Test</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold mb-4">Google GenAI API 测试</h1>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">API Key:</label>
+            <input id="apiKey" type="text" class="w-full border rounded px-3 py-2" placeholder="输入你的 Google AI API Key">
+        </div>
+
+        <button id="testBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+            测试 API 连接
+        </button>
+
+        <div id="result" class="mt-4 p-4 rounded hidden"></div>
+    </div>
+
+    <script type="module">
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!apiKey) {
+                resultDiv.className = 'mt-4 p-4 rounded bg-red-100 text-red-700';
+                resultDiv.textContent = '请输入 API Key';
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            resultDiv.className = 'mt-4 p-4 rounded bg-blue-100 text-blue-700';
+            resultDiv.textContent = '正在测试...';
+            resultDiv.classList.remove('hidden');
+
+            try {
+                // 测试 Google GenAI SDK
+                const client = new GoogleGenAI({ apiKey });
+
+                // 尝试获取模型列表
+                const response = await client.models.list();
+
+                if (Array.isArray(response.models) && response.models.length > 0) {
+                    resultDiv.className = 'mt-4 p-4 rounded bg-green-100 text-green-700';
+                    resultDiv.textContent = `✅ API Key 有效！找到 ${response.models.length} 个模型。`;
+
+                    // 检查是否包含我们的目标模型
+                    const hasTargetModel = response.models.some(model => model.name.includes('gemini-2.5-flash-image-preview'));
+                    if (hasTargetModel) {
+                        resultDiv.textContent += ' 目标模型可用！';
+                    } else {
+                        resultDiv.textContent += ' 注意：未找到 gemini-2.5-flash-image-preview 模型。';
+                    }
+                } else {
+                    resultDiv.className = 'mt-4 p-4 rounded bg-yellow-100 text-yellow-700';
+                    resultDiv.textContent = '⚠️ API 响应异常，未找到模型列表。';
+                }
+            } catch (error) {
+                resultDiv.className = 'mt-4 p-4 rounded bg-red-100 text-red-700';
+                resultDiv.textContent = `❌ 测试失败: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -13,7 +13,7 @@ const SETTINGS_STORAGE_KEY = 'aiVirtualTryOnSettings';
  */
 const DEFAULT_SETTINGS = {
   // API Keys 列表，每个key是一个对象
-  apiKeys: [], // 示例: [{ key: 'sk-xxxx', status: 'unknown' | 'valid' | 'invalid' }]
+  apiKeys: [], // 示例: [{ key: 'xxxx', status: 'unknown' | 'valid' | 'invalid' }]
   // AI 模型参数
   aiParams: {
     temperature: 0.7,

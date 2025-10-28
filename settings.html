@@ -102,7 +102,7 @@
 <div class="px-4 pb-4 space-y-4">
 <div class="flex items-center gap-2">
 <div class="relative flex-1">
-<input id="apiKeyInput" class="w-full rounded-lg border border-warm-pink/60 bg-white/50 py-2 pl-3 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary" placeholder="添加新的 API Key (sk-...)" type="text"/>
+<input id="apiKeyInput" class="w-full rounded-lg border border-warm-pink/60 bg-white/50 py-2 pl-3 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary" placeholder="添加新的 Google AI API Key" type="text"/>
 <button id="addApiKeyBtn" class="absolute inset-y-0 right-0 flex items-center justify-center size-9 text-slate-400 hover:text-primary transition-colors">
 <span class="material-symbols-outlined text-2xl">add_circle</span>
 </button>
@@ -114,7 +114,7 @@
 <div class="text-green-600 flex items-center justify-center rounded-lg bg-green-500/20 shrink-0 size-10">
 <span class="material-symbols-outlined text-2xl">check_circle</span>
 </div>
-<p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">API-Key-1: sk-...aBcDe</p>
+<p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">API-Key-1: ...aBcDe</p>
 </div>
 <div class="shrink-0 flex items-center gap-1">
 <button class="text-slate-500 hover:text-primary flex size-7 items-center justify-center transition-colors">
@@ -130,7 +130,7 @@
 <div class="text-red-600 flex items-center justify-center rounded-lg bg-red-500/20 shrink-0 size-10">
 <span class="material-symbols-outlined text-2xl">cancel</span>
 </div>
-<p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">API-Key-2: sk-...fGhIj</p>
+<p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">API-Key-2: ...fGhIj</p>
 </div>
 <div class="shrink-0 flex items-center gap-1">
 <button class="text-slate-500 hover:text-primary flex size-7 items-center justify-center transition-colors">
@@ -189,5 +189,6 @@
 <div class="h-5 bg-transparent"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js"></script>
 <script type="module" src="./assets/js/settings.js"></script>
 </body></html>
