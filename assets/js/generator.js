@@ -4,7 +4,7 @@
  */
 
 import { getSettings } from './services/storage.service.js';
-import { generateTryOn } from './services/api.service.js';
+import { generateImage } from './services/api.service.js';
 import { processImage } from './utils/image.util.js';
 import { showToast } from './utils/dom.util.js';
 
@@ -22,6 +22,10 @@ const resultActions = document.getElementById('resultActions');
 const saveBtn = document.getElementById('saveBtn');
 const shareBtn = document.getElementById('shareBtn');
 const settingsBtn = document.getElementById('settingsBtn');
+
+const progressIndicator = document.getElementById('progress-indicator');
+const progressBar = document.getElementById('progress-bar');
+const progressText = document.getElementById('progress-text');
 
 // 创建一个隐藏的文件输入框
 const garmentFileInput = document.createElement('input');
@@ -46,6 +50,7 @@ const pageState = {
 function setGeneratingState(generating) {
   pageState.isGenerating = generating;
   generateBtn.disabled = generating;
+  garmentFileInput.disabled = generating; // Disable file input during generation
   
   if (generating) {
     generateBtn.innerHTML = `
@@ -58,12 +63,16 @@ function setGeneratingState(generating) {
     loadingIndicator.classList.remove('hidden');
     resultImage.classList.add('hidden');
     resultActions.classList.add('hidden');
+    progressIndicator.classList.remove('hidden'); // Show progress indicator
+    progressBar.style.width = '0%'; // Reset progress bar
+    progressText.textContent = '正在初始化...'; // Reset progress text
   } else {
     generateBtn.innerHTML = `
       <span class="material-symbols-outlined">auto_awesome</span>
       <span class="truncate">Generate Try-On</span>
     `;
     loadingIndicator.classList.add('hidden');
+    progressIndicator.classList.add('hidden'); // Hide progress indicator
   }
 }
 
@@ -103,18 +112,59 @@ async function handleGenerate() {
     showToast('请先上传一件服装的图片。', 'error');
     return;
   }
-  if (!settings.apiKeys || settings.apiKeys.filter(k => k.status !== 'invalid').length === 0) {
-    showToast('请先在设置页面添加一个有效的 API Key。', 'error');
+  // Check for API keys based on selected provider
+  if (settings.apiProvider === 'google' && (!settings.apiKeys || settings.apiKeys.filter(k => k.status !== 'invalid').length === 0)) {
+    showToast('请先在设置页面添加一个有效的 Google AI API Key。', 'error');
+    return;
+  }
+  if (settings.apiProvider === 'grsai' && !settings.grsaiApiKey) {
+    showToast('请先在设置页面添加 Grsai API Key。', 'error');
     return;
   }
 
-  setGeneratingState(true);
+
+  setGeneratingState(true); // This will now show the progress indicator
 
   try {
-    const resultBase64 = await generateTryOn(
-      settings.modelImage,
-      pageState.garmentImageBase64,
-      settings.aiParams
+    const onProgress = ({ status, progress }) => {
+      let message = '';
+      switch (status) {
+        case 'starting':
+          message = '正在启动生成任务...';
+          break;
+        case 'requesting':
+          message = '正在请求 API...';
+          break;
+        case 'pending':
+          message = '任务已提交，等待处理...';
+          break;
+        case 'running':
+          message = `生成中... ${progress}%`;
+          break;
+        case 'processing':
+          message = '正在处理结果...';
+          break;
+        case 'succeeded':
+          message = '生成成功！';
+          break;
+        case 'failed':
+          message = '生成失败。';
+          break;
+        default:
+          message = '未知状态...';
+      }
+      progressText.textContent = message;
+      if (progress !== undefined) {
+        progressBar.style.width = `${progress}%`;
+      }
+    };
+
+    const resultBase64 = await generateImage(
+      {
+        modelImage: settings.modelImage,
+        garmentImage: pageState.garmentImageBase64,
+      },
+      onProgress
     );
     
     pageState.generatedImageBase64 = resultBase64;
@@ -129,7 +179,7 @@ async function handleGenerate() {
     resultImage.classList.add('hidden');
     resultActions.classList.add('hidden');
   } finally {
-    setGeneratingState(false);
+    setGeneratingState(false); // This will now hide the progress indicator
   }
 }
 

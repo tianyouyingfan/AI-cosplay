@@ -9,11 +9,17 @@ import { processImage } from './utils/image.util.js';
 import { showToast } from './utils/dom.util.js';
 
 // --- 1. DOM 元素选择 ---
-// 将页面上需要交互的元素提前获取并存储起来
+const apiProviderSelect = document.getElementById('apiProviderSelect');
+const googleProviderSettings = document.getElementById('googleProviderSettings');
+const grsaiProviderSettings = document.getElementById('grsaiProviderSettings');
+
 const apiKeyInput = document.getElementById('apiKeyInput');
 const addApiKeyBtn = document.getElementById('addApiKeyBtn');
 const apiKeyListContainer = document.getElementById('apiKeyListContainer');
 const verifyAllKeysBtn = document.getElementById('verifyAllKeysBtn');
+
+const grsaiApiKeyInput = document.getElementById('grsaiApiKeyInput');
+const addGrsaiApiKeyBtn = document.getElementById('addGrsaiApiKeyBtn');
 
 const temperatureSlider = document.getElementById('temperatureSlider');
 const temperatureValueSpan = document.getElementById('temperatureValue');
@@ -22,7 +28,7 @@ const promptTextarea = document.getElementById('promptTextarea');
 const modelImageUploadContainer = document.getElementById('modelImageUploadContainer');
 const modelImagePreview = document.getElementById('modelImagePreview');
 const backBtn = document.getElementById('backBtn');
-// 创建一个隐藏的文件输入框，通过点击图片区域来触发它
+
 const modelImageFileInput = document.createElement('input');
 modelImageFileInput.type = 'file';
 modelImageFileInput.accept = 'image/*';
@@ -30,51 +36,81 @@ modelImageFileInput.style.display = 'none';
 
 
 // --- 2. 渲染函数 ---
-// 这些函数负责将数据更新到 UI 上
+
+/**
+ * 根据选择的 provider 渲染对应的设置区域。
+ */
+function renderProviderSettings() {
+  const { apiProvider } = getSettings();
+  apiProviderSelect.value = apiProvider;
+
+  if (apiProvider === 'google') {
+    googleProviderSettings.style.display = 'block';
+    grsaiProviderSettings.style.display = 'none';
+    verifyAllKeysBtn.style.display = 'block';
+  } else if (apiProvider === 'grsai') {
+    googleProviderSettings.style.display = 'none';
+    grsaiProviderSettings.style.display = 'block';
+    verifyAllKeysBtn.style.display = 'none'; // Grsai API key is not verifiable with the same method
+  }
+  renderApiKeys(); // Re-render keys for the selected provider
+}
 
 /**
  * 根据 apiKeys 数组渲染 API Key 列表。
+ * 现在会根据 provider 区分渲染
  */
 function renderApiKeys() {
-  const { apiKeys } = getSettings();
+  const { apiKeys, apiProvider, grsaiApiKey } = getSettings();
   apiKeyListContainer.innerHTML = ''; // 清空现有列表
 
-  if (apiKeys.length === 0) {
-    apiKeyListContainer.innerHTML = '<p class="text-slate-500 text-sm text-center py-2">尚未添加任何 API Key。</p>';
-    return;
-  }
-
-  apiKeys.forEach((keyObj, index) => {
-    const keyItem = document.createElement('div');
-    keyItem.className = 'flex items-center gap-4 bg-transparent px-0 min-h-14 justify-between';
-
-    let statusIconHtml = '';
-    switch (keyObj.status) {
-      case 'valid':
-        statusIconHtml = `<div class="text-green-600 flex items-center justify-center rounded-lg bg-green-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">check_circle</span></div>`;
-        break;
-      case 'invalid':
-        statusIconHtml = `<div class="text-red-600 flex items-center justify-center rounded-lg bg-red-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">cancel</span></div>`;
-        break;
-      default: // 'unknown' or undefined
-        statusIconHtml = `<div class="text-slate-500 flex items-center justify-center rounded-lg bg-slate-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">help_outline</span></div>`;
+  if (apiProvider === 'google') {
+    if (apiKeys.length === 0) {
+      apiKeyListContainer.innerHTML = '<p class="text-slate-500 text-sm text-center py-2">尚未添加任何 Google AI API Key。</p>';
+      return;
     }
 
-    keyItem.innerHTML = `
-      <div class="flex items-center gap-4">
-        ${statusIconHtml}
-        <p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">
-          API-Key-${index + 1}: ${keyObj.key.substring(0, 5)}...${keyObj.key.substring(keyObj.key.length - 5)}
-        </p>
-      </div>
-      <div class="shrink-0 flex items-center gap-1">
-        <button data-key="${keyObj.key}" class="delete-key-btn text-slate-500 hover:text-red-500 flex size-7 items-center justify-center transition-colors">
-          <span class="material-symbols-outlined !text-xl">delete</span>
-        </button>
-      </div>
-    `;
-    apiKeyListContainer.appendChild(keyItem);
-  });
+    apiKeys.forEach((keyObj, index) => {
+      const keyItem = document.createElement('div');
+      keyItem.className = 'flex items-center gap-4 bg-transparent px-0 min-h-14 justify-between';
+
+      let statusIconHtml = '';
+      switch (keyObj.status) {
+        case 'valid':
+          statusIconHtml = `<div class="text-green-600 flex items-center justify-center rounded-lg bg-green-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">check_circle</span></div>`;
+          break;
+        case 'invalid':
+          statusIconHtml = `<div class="text-red-600 flex items-center justify-center rounded-lg bg-red-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">cancel</span></div>`;
+          break;
+        default: // 'unknown' or undefined
+          statusIconHtml = `<div class="text-slate-500 flex items-center justify-center rounded-lg bg-slate-500/20 shrink-0 size-10"><span class="material-symbols-outlined text-2xl">help_outline</span></div>`;
+      }
+
+      keyItem.innerHTML = `
+        <div class="flex items-center gap-4">
+          ${statusIconHtml}
+          <p class="text-slate-900 text-base font-normal leading-normal flex-1 truncate">
+            API-Key-${index + 1}: ${keyObj.key.substring(0, 5)}...${keyObj.key.substring(keyObj.key.length - 5)}
+          </p>
+        </div>
+        <div class="shrink-0 flex items-center gap-1">
+          <button data-key="${keyObj.key}" class="delete-key-btn text-slate-500 hover:text-red-500 flex size-7 items-center justify-center transition-colors">
+            <span class="material-symbols-outlined !text-xl">delete</span>
+          </button>
+        </div>
+      `;
+      apiKeyListContainer.appendChild(keyItem);
+    });
+  } else if (apiProvider === 'grsai') {
+      if (!grsaiApiKey) {
+        apiKeyListContainer.innerHTML = '<p class="text-slate-500 text-sm text-center py-2">尚未添加 Grsai API Key。</p>';
+        return;
+      }
+      grsaiApiKeyInput.value = grsaiApiKey;
+      // Grsai has a single key, so we don't show a list.
+      // The input field itself will show the current key.
+      apiKeyListContainer.innerHTML = '';
+  }
 }
 
 /**
@@ -102,12 +138,18 @@ function renderModelImage() {
 
 
 // --- 3. 事件处理函数 ---
-// 这些函数处理用户的具体操作
+
+function handleProviderChange(event) {
+    const settings = getSettings();
+    settings.apiProvider = event.target.value;
+    saveSettings(settings);
+    renderProviderSettings();
+}
 
 function handleAddApiKey() {
   const newKey = apiKeyInput.value.trim();
   if (!newKey || newKey.length < 10) {
-    showToast('请输入有效的 API Key。', 'error');
+    showToast('请输入有效的 Google AI API Key。', 'error');
     return;
   }
 
@@ -121,7 +163,19 @@ function handleAddApiKey() {
   saveSettings(settings);
   apiKeyInput.value = '';
   renderApiKeys();
-  showToast('API Key 添加成功！', 'success');
+  showToast('Google AI API Key 添加成功！', 'success');
+}
+
+function handleAddGrsaiApiKey() {
+    const newKey = grsaiApiKeyInput.value.trim();
+    if (!newKey || newKey.length < 10) {
+        showToast('请输入有效的 Grsai API Key。', 'error');
+        return;
+    }
+    const settings = getSettings();
+    settings.grsaiApiKey = newKey;
+    saveSettings(settings);
+    showToast('Grsai API Key 已保存！', 'success');
 }
 
 function handleDeleteApiKey(keyToDelete) {
@@ -147,7 +201,6 @@ async function handleVerifyApiKeys() {
       return;
   }
   
-  // 使用 Promise.all 并行验证所有待测 Key
   await Promise.all(keysToVerify.map(async (keyObj) => {
     const isValid = await verifyApiKey(keyObj.key);
     const keyIndex = settings.apiKeys.findIndex(k => k.key === keyObj.key);
@@ -193,7 +246,6 @@ async function handleModelImageUpload(event) {
   } catch (error) {
     showToast(`图片处理失败: ${error}`, 'error');
   }
-  // 重置 file input 以允许用户再次上传相同文件
   event.target.value = '';
 }
 
@@ -203,25 +255,22 @@ function handleBackNavigation() {
 
 
 // --- 4. 初始化函数 ---
-// 页面加载完成后，执行此函数来启动所有功能
 
 function init() {
-  // 首次加载时，渲染所有数据
-  renderApiKeys();
+  renderProviderSettings();
   renderAiParams();
   renderModelImage();
 
   // 绑定事件监听器
+  apiProviderSelect.addEventListener('change', handleProviderChange);
   addApiKeyBtn.addEventListener('click', handleAddApiKey);
+  addGrsaiApiKeyBtn.addEventListener('click', handleAddGrsaiApiKey);
   verifyAllKeysBtn.addEventListener('click', handleVerifyApiKeys);
   
   temperatureSlider.addEventListener('input', handleTemperatureChange);
-  // 使用 'blur' 事件代替 'input' 来避免频繁写入 localStorage
   promptTextarea.addEventListener('blur', handlePromptChange);
 
-  // 事件委托：为整个列表容器添加一个点击事件监听器
   apiKeyListContainer.addEventListener('click', (event) => {
-    // 检查被点击的元素或其父元素是否是删除按钮
     const deleteButton = event.target.closest('.delete-key-btn');
     if (deleteButton) {
       const key = deleteButton.dataset.key;
@@ -229,14 +278,11 @@ function init() {
     }
   });
 
-  // 图片上传逻辑
   modelImageUploadContainer.appendChild(modelImageFileInput);
   modelImageUploadContainer.addEventListener('click', () => modelImageFileInput.click());
   modelImageFileInput.addEventListener('change', handleModelImageUpload);
 
-  // 返回按钮导航
   backBtn.addEventListener('click', handleBackNavigation);
 }
 
-// 当整个页面的 HTML 加载并解析完成后，执行初始化函数
 document.addEventListener('DOMContentLoaded', init);

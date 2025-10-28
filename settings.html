@@ -100,12 +100,33 @@
 </div>
 </summary>
 <div class="px-4 pb-4 space-y-4">
+<div>
+<label class="text-sm font-medium text-slate-700 mb-2 block">API 提供商</label>
+<select id="apiProviderSelect" class="w-full rounded-lg border border-warm-pink/60 bg-white/50 py-2 px-3 text-slate-900 focus:border-primary focus:ring-primary">
+<option value="google">Google AI Studio</option>
+<option value="grsai">Grsai</option>
+</select>
+</div>
+<div id="googleProviderSettings">
+<label class="text-sm font-medium text-slate-700 mb-2 block">Google AI API Key</label>
 <div class="flex items-center gap-2">
 <div class="relative flex-1">
 <input id="apiKeyInput" class="w-full rounded-lg border border-warm-pink/60 bg-white/50 py-2 pl-3 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary" placeholder="添加新的 Google AI API Key" type="text"/>
 <button id="addApiKeyBtn" class="absolute inset-y-0 right-0 flex items-center justify-center size-9 text-slate-400 hover:text-primary transition-colors">
 <span class="material-symbols-outlined text-2xl">add_circle</span>
 </button>
+</div>
+</div>
+</div>
+<div id="grsaiProviderSettings" style="display: none;">
+<label class="text-sm font-medium text-slate-700 mb-2 block">Grsai API Key</label>
+<div class="flex items-center gap-2">
+<div class="relative flex-1">
+<input id="grsaiApiKeyInput" class="w-full rounded-lg border border-warm-pink/60 bg-white/50 py-2 pl-3 pr-10 text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-primary" placeholder="添加新的 Grsai API Key" type="text"/>
+<button id="addGrsaiApiKeyBtn" class="absolute inset-y-0 right-0 flex items-center justify-center size-9 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">add_circle</span>
+</button>
+</div>
 </div>
 </div>
 <div id="apiKeyListContainer" class="space-y-2">
