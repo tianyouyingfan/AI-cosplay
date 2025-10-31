@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AI Virtual Try-On</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
+<html lang="en">
+
+<head>
+  <!-- 链接到 Manifest 文件 -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- 定义主题颜色 -->
+  <meta name="theme-color" content="#ff8c00">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>AI Virtual Try-On</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script>
     tailwind.config = {
       darkMode: "class",
       theme: {
@@ -29,88 +37,125 @@
         },
       },
     }
-    </script>
-<style>
+  </script>
+  <style>
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  </head>
-<body class="bg-background-light font-display">
-<div class="relative flex h-auto min-h-screen w-full flex-col">
-<div class="flex items-center bg-background-light p-4 pb-2 justify-between sticky top-0 z-10 border-b border-orange-200/50">
-<div class="text-orange-900 flex size-12 shrink-0 items-center justify-start">
-<span class="material-symbols-outlined">arrow_back</span>
-</div>
-<h1 class="text-orange-900 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">AI Virtual Try-On</h1>
-<div class="flex w-12 items-center justify-end">
-<button id="settingsBtn" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-orange-900 gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0 hover:bg-orange-100/50 transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
-</div>
-</div>
-<div class="flex-grow p-4 space-y-8">
-<div class="flex flex-col gap-4">
-<h2 class="text-orange-900 text-base font-bold leading-tight tracking-[-0.015em]">1. Upload Garment</h2>
-<div id="garmentUploadBox" class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50/50 px-6 py-10">
-<img id="garmentImagePreview" src="" alt="Garment Preview" class="hidden w-32 h-32 object-contain mb-4 rounded-lg"/>
-<div id="garmentUploadInfo" class="flex max-w-[480px] flex-col items-center gap-2">
-<p class="text-orange-900 text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Upload Garment Image</p>
-<p class="text-orange-700/80 text-sm font-normal leading-normal max-w-[480px] text-center">Tap to select a photo from your gallery or take a new one.</p>
-</div>
-<button id="selectImageBtn" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:opacity-90 transition-opacity">
-<span class="material-symbols-outlined text-base">upload_file</span>
-<span class="truncate">Select Image</span>
-</button>
-</div>
-</div>
-<div class="flex flex-col items-center justify-center">
-<button id="generateBtn" class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
-<span class="material-symbols-outlined">auto_awesome</span>
-<span class="truncate">Generate Try-On</span>
-</button>
-</div>
-<div class="flex flex-col gap-4">
-<h2 class="text-orange-900 text-base font-bold leading-tight tracking-[-0.015em]">2. AI Generated Result</h2>
-<p class="text-orange-700/80 text-sm font-normal leading-normal">Your generated try-on will appear here once ready.</p>
-<div id="progress-indicator" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-4 p-8 text-center hidden">
-  <div class="w-full bg-warm-pink/30 rounded-full h-2.5">
-    <div id="progress-bar" class="bg-gradient-to-br from-warm-pink to-warm-orange h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-  </div>
-  <p id="progress-text" class="text-sm font-medium text-slate-700">正在初始化...</p>
-</div>
-<div id="resultContainer" class="relative w-full aspect-[2/3] rounded-xl overflow-hidden bg-white flex items-center justify-center border border-orange-200/80">
-<div id="loadingIndicator" class="flex flex-col items-center justify-center text-center p-4">
-<svg class="animate-spin h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
-</svg>
-<p class="text-orange-700/80 mt-4">Generating your new look...</p>
-</div>
-<img id="resultImage" src="" alt="AI Generated Result" class="hidden absolute inset-0 w-full h-full object-contain"/>
-</div>
-<div id="resultActions" class="grid grid-cols-2 gap-4 pt-2">
-<button id="saveBtn" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-4 bg-orange-100/80 text-orange-800 text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-orange-200/80 transition-colors">
-<span class="material-symbols-outlined text-base">download</span>
-<span class="truncate">Save</span>
-</button>
-<button id="shareBtn" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-4 bg-orange-100/80 text-orange-800 text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-orange-200/80 transition-colors">
-<span class="material-symbols-outlined text-base">share</span>
-<span class="truncate">Share</span>
-</button>
-</div>
-</div>
-</div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js"></script>
-<script type="module" src="./assets/js/generator.js"></script>
-</body></html>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-background-light font-display">
+  <div class="relative flex h-auto min-h-screen w-full flex-col">
+    <div
+      class="flex items-center bg-background-light p-4 pb-2 justify-between sticky top-0 z-10 border-b border-orange-200/50">
+      <div class="text-orange-900 flex size-12 shrink-0 items-center justify-start">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </div>
+      <h1 class="text-orange-900 text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">AI Virtual
+        Try-On</h1>
+      <div class="flex w-12 items-center justify-end">
+        <button id="settingsBtn"
+          class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-orange-900 gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0 hover:bg-orange-100/50 transition-colors">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex-grow p-4 space-y-8">
+      <div class="flex flex-col gap-4">
+        <h2 class="text-orange-900 text-base font-bold leading-tight tracking-[-0.015em]">1. Upload Garment</h2>
+        <div id="garmentUploadBox"
+          class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50/50 px-6 py-10">
+          <img id="garmentImagePreview" src="" alt="Garment Preview"
+            class="hidden w-32 h-32 object-contain mb-4 rounded-lg" />
+          <div id="garmentUploadInfo" class="flex max-w-[480px] flex-col items-center gap-2">
+            <p class="text-orange-900 text-lg font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">
+              Upload Garment Image</p>
+            <p class="text-orange-700/80 text-sm font-normal leading-normal max-w-[480px] text-center">Tap to select a
+              photo from your gallery or take a new one.</p>
+          </div>
+          <button id="selectImageBtn"
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-base">upload_file</span>
+            <span class="truncate">Select Image</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <button id="generateBtn"
+          class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-6 bg-gradient-to-r from-pink-500 to-orange-400 text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined">auto_awesome</span>
+          <span class="truncate">Generate Try-On</span>
+        </button>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h2 class="text-orange-900 text-base font-bold leading-tight tracking-[-0.015em]">2. AI Generated Result</h2>
+        <p class="text-orange-700/80 text-sm font-normal leading-normal">Your generated try-on will appear here once
+          ready.</p>
+        <div id="progress-indicator"
+          class="absolute inset-0 bg-white/70 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-4 p-8 text-center hidden">
+          <div class="w-full bg-warm-pink/30 rounded-full h-2.5">
+            <div id="progress-bar"
+              class="bg-gradient-to-br from-warm-pink to-warm-orange h-2.5 rounded-full transition-all duration-300"
+              style="width: 0%"></div>
+          </div>
+          <p id="progress-text" class="text-sm font-medium text-slate-700">正在初始化...</p>
+        </div>
+        <div id="resultContainer"
+          class="relative w-full aspect-[2/3] rounded-xl overflow-hidden bg-white flex items-center justify-center border border-orange-200/80">
+          <div id="loadingIndicator" class="flex flex-col items-center justify-center text-center p-4">
+            <svg class="animate-spin h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                fill="currentColor"></path>
+            </svg>
+            <p class="text-orange-700/80 mt-4">Generating your new look...</p>
+          </div>
+          <img id="resultImage" src="" alt="AI Generated Result"
+            class="hidden absolute inset-0 w-full h-full object-contain" />
+        </div>
+        <div id="resultActions" class="grid grid-cols-2 gap-4 pt-2">
+          <button id="saveBtn"
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-4 bg-orange-100/80 text-orange-800 text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-orange-200/80 transition-colors">
+            <span class="material-symbols-outlined text-base">download</span>
+            <span class="truncate">Save</span>
+          </button>
+          <button id="shareBtn"
+            class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-11 px-4 bg-orange-100/80 text-orange-800 text-sm font-bold leading-normal tracking-[0.015em] gap-2 hover:bg-orange-200/80 transition-colors">
+            <span class="material-symbols-outlined text-base">share</span>
+            <span class="truncate">Share</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js"></script>
+  <script type="module" src="./assets/js/generator.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "AI 虚拟试衣间",
+  "short_name": "AI Cosplay",
+  "description": "一款完全运行在浏览器中的纯前端 AI 虚拟换装应用。",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff8c00",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

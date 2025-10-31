@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>API Test</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js"></script>
+    <!-- 链接到 Manifest 文件 -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- 定义主题颜色 -->
+    <meta name="theme-color" content="#ff8c00">
 </head>
+
 <body class="bg-gray-100 p-8">
     <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6">
         <h1 class="text-2xl font-bold mb-4">Google GenAI API 测试</h1>
@@ -67,5 +74,19 @@
             }
         });
     </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
 </body>
+
 </html>
