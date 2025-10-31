@@ -3,6 +3,9 @@
  * @description 设置页面的所有交互逻辑。
  */
 
+// 使用 Google Generative AI 的 ES 模块导入
+import { GoogleGenerativeAI } from "https://cdn.jsdelivr.net/npm/@google/generative-ai@0.24.1/dist/index.mjs";
+
 import { getSettings, saveSettings } from './services/storage.service.js';
 import { verifyApiKey } from './services/api.service.js';
 import { processImage } from './utils/image.util.js';
