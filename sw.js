@@ -1,4 +1,11 @@
-const CACHE_NAME = 'ai-cosplay-cache-v5';
+// 在脚本的最顶部添加一个醒目的“指纹”日志
+console.log(
+  '%c ✨ AI-Cosplay Service Worker v6 LOADED! Redirect fix is INCLUDED. ✨',
+  'color: #ff8c00; font-size: 1.2em; font-weight: bold;'
+);
+
+// 缓存版本号更新到 v6
+const CACHE_NAME = 'ai-cosplay-cache-v6';
 
 const urlsToCache = [
     '/',
@@ -19,23 +26,25 @@ const urlsToCache = [
     'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.24.1/dist/index.mjs'
 ];
 
+// 安装事件
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache and caching core assets');
+                console.log('Service Worker v6: Caching core assets.');
                 return cache.addAll(urlsToCache);
             })
     );
 });
 
+// 激活事件
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('Deleting old cache:', cacheName);
+                        console.log('Service Worker v6: Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -45,10 +54,12 @@ self.addEventListener('activate', event => {
     return self.clients.claim();
 });
 
+// Fetch 事件 (包含了 redirect: 'follow' 修复)
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET' || event.request.url.startsWith('chrome-extension://')) {
         return;
     }
+
     event.respondWith(
         caches.open(CACHE_NAME).then(cache => {
             return cache.match(event.request).then(cachedResponse => {
