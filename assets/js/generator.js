@@ -227,7 +227,7 @@ async function handleShareImage() {
 }
 
 function handleSettingsNavigation() {
-  window.location.href = 'settings.html';
+  window.location.hash = '#settings';
 }
 
 
@@ -245,10 +245,12 @@ function init() {
   generateBtn.addEventListener('click', handleGenerate);
   saveBtn.addEventListener('click', handleSaveImage);
   shareBtn.addEventListener('click', handleShareImage);
-  settingsBtn.addEventListener('click', handleSettingsNavigation);
+  
+  // The settings button is now a link, so this listener is not needed.
+  // settingsBtn.addEventListener('click', handleSettingsNavigation);
 
   // 初始时隐藏结果操作按钮
   resultActions.classList.add('hidden');
 }
 
-document.addEventListener('DOMContentLoaded', init);
+export { init };

@@ -253,7 +253,7 @@ async function handleModelImageUpload(event) {
 }
 
 function handleBackNavigation() {
-  window.location.href = 'index.html';
+  window.location.hash = '#home';
 }
 
 
@@ -285,7 +285,8 @@ function init() {
   modelImageUploadContainer.addEventListener('click', () => modelImageFileInput.click());
   modelImageFileInput.addEventListener('change', handleModelImageUpload);
 
-  backBtn.addEventListener('click', handleBackNavigation);
+  // The back button is now a link, so this listener is not needed.
+  // backBtn.addEventListener('click', handleBackNavigation);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+export { init };
