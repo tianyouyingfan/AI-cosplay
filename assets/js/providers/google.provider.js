@@ -3,9 +3,10 @@
  * @description Google AI Studio API 服务提供商的实现。
  */
 
+import { GoogleGenerativeAI } from 'https://cdn.jsdelivr.net/npm/@google/generative-ai@0.24.1/+esm';
 import { getSettings, saveSettings } from '../services/storage.service.js';
 
-const MODEL_NAME = 'gemini-1.5-flash'; // Using a standard model name
+const MODEL_NAME = 'gemini-pro-vision'; // Using a standard model name
 
 /**
  * 从存储的 API Keys 中获取下一个可用的 Key。
@@ -63,7 +64,7 @@ export async function generateImage(params, onProgress) {
   onProgress({ status: 'starting', progress: 0 });
 
   try {
-    const client = new globalThis.GoogleGenerativeAI(apiKey);
+    const client = new GoogleGenerativeAI(apiKey);
     const model = client.getGenerativeModel({ model: MODEL_NAME });
 
     onProgress({ status: 'requesting', progress: 25 });
@@ -113,7 +114,7 @@ export async function generateImage(params, onProgress) {
  */
 export async function verifyApiKey(apiKey) {
   try {
-    const client = new globalThis.GoogleGenerativeAI(apiKey);
+    const client = new GoogleGenerativeAI(apiKey);
     // A simple way to verify is to list models, but this might not be available in all environments.
     // A more robust check might be needed depending on the library's capabilities.
     await client.getGenerativeModel({ model: MODEL_NAME }).generateContent('test');
