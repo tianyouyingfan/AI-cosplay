@@ -139,8 +139,7 @@ class Router {
   constructor() {
     this.routes = new Map([
       ['#home', () => import('./generator.js')],
-      ['#settings', () => import('./settings.js')],
-      ['#test-api', () => import('./test-api.js')]
+      ['#settings', () => import('./settings.js')]
     ])
   }
 }
@@ -217,7 +216,6 @@ class Router {
 
 - **主页面 → 设置页面**: 点击右上角设置图标 (⚙️)
 - **设置页面 → 主页面**: 点击左上角返回图标 (←)
-- **主页面 → 测试页面**: 开发者调试用，可通过 URL 直接访问 `#test-api`
 
 ### 🎨 **界面特性**
 - **响应式设计**: 完美适配手机、平板和桌面设备
@@ -252,8 +250,7 @@ AI-cosplay/
         │   ├── dom.util.js           # DOM操作工具
         │   └── image.util.js         # 图片处理工具
         ├── generator.js       # 主页面功能模块
-        ├── settings.js        # 设置页面功能模块
-        └── test-api.js        # API测试页面模块
+        └── settings.js        # 设置页面功能模块
 ```
 
 ### 🔧 **开发环境配置**
@@ -275,7 +272,6 @@ npx serve -s . -p 8000
 1. **ES 模块**: 项目使用 ES6 模块化，需要现代浏览器支持
 2. **CORS 策略**: 必须通过 HTTP 服务器访问，不支持直接打开文件
 3. **PWA 缓存**: 开发时可能需要禁用 Service Worker 或清除缓存
-4. **API 调试**: 使用 `#test-api` 页面进行 API 功能测试
 
 ### 🧩 **模块说明**
 

@@ -1,9 +1,9 @@
 console.log(
-  '%c ✨ AI-Cosplay Service Worker v9 (SPA) 已加载！ ✨',
+  '%c ✨ AI-Cosplay Service Worker v10 (SPA) 已加载！ ✨',
   'color: #ff8c00; font-size: 1.2em; font-weight: bold;'
 );
 
-const CACHE_NAME = 'ai-cosplay-cache-v9';
+const CACHE_NAME = 'ai-cosplay-cache-v10';
 const APP_SHELL_URL = '/index.html';
 
 // 应用外壳，包含所有核心文件
@@ -12,7 +12,6 @@ const urlsToCache = [
     APP_SHELL_URL,
     '/assets/css/style.css',
     '/assets/js/router.js',
-    '/assets/js/test-api.js',
     '/assets/js/services/storage.service.js',
     '/assets/js/services/api.service.js',
     '/assets/js/providers/google.provider.js',
@@ -28,8 +27,7 @@ const urlsToCache = [
     '/showPoto/show.png',
     'https://cdn.tailwindcss.com?plugins=forms,container-queries',
     'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap',
-    'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined',
-    'https://cdn.jsdelivr.net/npm/@google/genai@0.15.0/dist/index.umd.min.js'
+    'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined'
 ];
 
 // 安装事件：缓存 App Shell
@@ -37,7 +35,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Service Worker v9: 正在缓存 App Shell。');
+                console.log('Service Worker v10: 正在缓存 App Shell。');
                 // 使用 addAll 来原子性地添加所有 URL
                 // 对外部资源使用 no-cors 模式，即使失败也不会导致整个缓存失败
                 const cachePromises = urlsToCache.map(url => {
@@ -56,7 +54,7 @@ self.addEventListener('activate', event => {
             return Promise.all(
                 cacheNames.map(cacheName => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('Service Worker v9: 正在删除旧缓存:', cacheName);
+                        console.log('Service Worker v10: 正在删除旧缓存:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })

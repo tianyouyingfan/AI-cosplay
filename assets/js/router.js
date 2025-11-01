@@ -2,20 +2,17 @@
 const routes = {
     '#': 'home',
     '#home': 'home',
-    '#settings': 'settings',
-    '#test-api': 'test-api'
+    '#settings': 'settings'
 };
 
 const pageModules = {
     'home': { path: './generator.js', loaded: false },
-    'settings': { path: './settings.js', loaded: false },
-    'test-api': { path: './test-api.js', loaded: false }
+    'settings': { path: './settings.js', loaded: false }
 };
 
 const pageTitles = {
     'home': 'AI虚拟试衣间',
-    'settings': '设置',
-    'test-api': 'API 测试'
+    'settings': '设置'
 };
 
 const pageElements = {};
