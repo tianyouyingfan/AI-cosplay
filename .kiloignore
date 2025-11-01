@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Version control
+.git/
+.gitignore
+
+# OS generated files
+.DS_Store
+.Thumbs.db
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.pid
+*.seed
+*~
+*.swp
+*.swo
+
+# Editor configurations
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Environment files
+.env
+.env.*
+
+# Coverage reports
+coverage/
+
+# Lock files (keep only what's necessary)
+yarn.lock
+pnpm-lock.yaml
+
+# Large binaries and media
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.exe
+*.dmg
+*.pkg
+*.deb
+*.rpm
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# AI/ML models (too large for editor)
+*.h5
+*.pb
+*.onnx
+*.tflite
+models/

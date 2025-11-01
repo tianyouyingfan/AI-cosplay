@@ -1,0 +1,91 @@
+# Dependencies (from .gitignore)
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Environment files
+.env
+.env.*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.pid
+*.seed
+
+# OS files
+.DS_Store
+.Thumbs.db
+._*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (keep Claude focused on code)
+*.md
+README*
+CHANGELOG*
+LICENSE*
+CONTRIBUTING*
+
+# Claude's own configuration
+.claude/
+
+# Demo and example files
+showPoto/
+examples/
+demo/
+
+# Large media files that don't need analysis
+*.ico
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.mp4
+*.avi
+*.mov
+*.webm
+
+# Configuration files that don't need frequent changes
+manifest.json
+sw.js
+*.config.js
+*.config.ts
+
+# Test coverage reports
+coverage/
+*.lcov
+
+# Bundle and minified files
+*.min.js
+*.min.css
+bundle.*
+
+# AI/ML model files (too large for analysis)
+*.h5
+*.pb
+*.onnx
+*.tflite
+models/
+
+# Backup and archive files
+*.bak
+*.backup
+*.zip
+*.tar.gz
+*.rar
+
+# Lock files (team-specific)
+yarn.lock
+pnpm-lock.yaml
