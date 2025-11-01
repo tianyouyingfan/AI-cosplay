@@ -19,7 +19,7 @@
 - **🧠 Gemini 架构**: 基于 SPA (单页面应用) 的现代化前端架构
 - **🔄 智能路由**: 基于 Hash 的客户端路由系统，页面切换无需刷新
 - **📦 模块化设计**: 服务层、提供商层、工具层清晰分离，易于维护和扩展
-- **⚙️ 双 AI 提供商**: 支持 Google AI Studio 和 Grsai，满足不同需求
+- **⚙️ 双 AI 提供商**: 支持 Google AI Studio (gemini-2.5-flash-image-preview) 和 Grsai (nano-banana-fast)，满足不同需求
 
 ### 🚀 **用户体验**
 - **👆 直观操作**: 三步完成虚拟试穿，无需复杂配置
@@ -37,14 +37,16 @@
 
 ### ⚙️ **智能 API 管理**
 - **双提供商支持**:
-  - **Google AI Studio**: 多模态理解，适合分析任务
+  - **Google AI Studio**: 基于 gemini-2.5-flash-image-preview 的多模态图像生成
   - **Grsai**: 专业图像生成，提供逼真效果
 - **智能 Key 管理**:
   - Google AI 支持多 Key 轮询，最大化利用免费额度
   - 批量验证功能，实时显示 Key 状态
+  - 完善的错误处理和状态跟踪机制
 - **参数自定义**:
   - 温度调节控制生成创造性
   - 自定义提示词，支持 `[服装]` 占位符
+  - 完全基于 REST API 的稳定调用方式
 
 ### 🎨 **现代化界面**
 - **SPA 路由系统**: 流畅的页面切换，无需刷新
@@ -85,9 +87,9 @@ npx serve .
 #### **步骤 2️⃣: 配置 API**
 1. 点击右上角的 **设置按钮** (⚙️)
 2. 选择 AI 提供商：
-   - **Google AI Studio**: 从 [Google AI Studio](https://aistudio.google.com/app/apikey) 获取 API Key
+   - **Google AI Studio**: 从 [Google AI Studio](https://aistudio.google.com/app/apikey) 获取 API Key，使用 gemini-2.5-flash-image-preview 模型
    - **Grsai**: 联系服务方获取 API Key (推荐用于图像生成)
-3. 添加 API Key (Google AI 支持添加多个)
+3. 添加 API Key (Google AI 支持添加多个，自动轮询使用)
 4. 上传您的 **全身照** 作为模特基底
 5. 调整 AI 参数 (可选)
 
@@ -121,7 +123,7 @@ npx serve .
 - **缓存策略**: 缓存优先，后台更新
 
 ### 🤖 **AI 服务提供商**
-- **Google AI Studio**: Gemini 1.5 Flash 多模态模型
+- **Google AI Studio**: gemini-2.5-flash-image-preview 多模态图像生成模型 (nano banana)
 - **Grsai**: nano-banana-fast 专业图像生成模型
 
 ---
@@ -359,15 +361,16 @@ git subtree push --prefix dist origin gh-pages
 
 ### 🤖 **AI 提供商对比**
 
-#### **Google AI Studio (Gemini 1.5 Flash)**
+#### **Google AI Studio (gemini-2.5-flash-image-preview)**
 - **优势**:
   - 免费额度较大
   - 多模态理解能力强
+  - 图像生成能力显著增强
   - 响应速度快
 - **限制**:
-  - 主要用于理解分析，图像生成能力有限
   - 需要科学上网访问
-- **适用场景**: 服装分析、风格描述、内容理解
+  - 新模型可能存在稳定性问题
+- **适用场景**: 服装分析、风格描述、内容理解、图像生成
 
 #### **Grsai (nano-banana-fast)**
 - **优势**:
@@ -391,8 +394,13 @@ git subtree push --prefix dist origin gh-pages
    - 解决方案: 调整 CSS 容器设置
 
 3. **API 响应格式**:
-   - 问题: 不同提供商返回格式不统一
+   - 问题: 不同提供商返回格式不统一 ✅ **已解决**
    - 解决方案: 服务层统一处理转换
+
+#### **已解决的技术问题**
+- **Google API 调用稳定性**: 通过 REST API 实现和完善的错误处理机制，已解决 Google AI Studio 的调用问题
+- **API Key 管理优化**: 实现了智能轮询和状态跟踪，最大化利用免费额度
+- **模型兼容性**: 成功集成 gemini-2.5-flash-image-preview (nano banana) 模型
 
 #### **使用建议**
 - **网络环境**: 建议在稳定的网络环境下使用
@@ -411,6 +419,8 @@ git subtree push --prefix dist origin gh-pages
 - [x] **PWA 支持**: 离线使用、应用安装
 - [x] **API Key 管理**: 多 Key 轮询、状态跟踪
 - [x] **响应式界面**: 移动端优化
+- [x] **Nano Banana 集成**: gemini-2.5-flash-image-preview 模型集成
+- [x] **API 问题解决**: Google AI 调用稳定性和错误处理优化
 
 ### 🚧 **开发中功能**
 - [ ] **Grsai 图片传递**: 完善模特照片上传机制
