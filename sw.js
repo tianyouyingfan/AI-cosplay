@@ -1,3 +1,5 @@
+// --- START OF FILE sw.js (FIXED) ---
+
 console.log(
   '%c ✨ AI-Cosplay Service Worker v10 (Robust) 已加载！ ✨',
   'color: #28a745; font-size: 1.2em; font-weight: bold;'
@@ -74,7 +76,8 @@ self.addEventListener('fetch', event => {
                 .then(response => {
                     if (response) return response;
                     // 如果 index.html 也不在缓存中（极少见），则从网络获取
-                    return fetch(APP_SHELL_URL);
+                    // --- FIX 1: 添加 redirect: 'follow' ---
+                    return fetch(APP_SHELL_URL, { redirect: 'follow' });
                 })
         );
         return;
@@ -85,13 +88,18 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => {
             return cache.match(event.request).then(cachedResponse => {
                 // 1. 从网络获取新的响应
-                const fetchPromise = fetch(event.request).then(networkResponse => {
+                // --- FIX 2: 添加 redirect: 'follow' ---
+                const fetchPromise = fetch(event.request, { redirect: 'follow' }).then(networkResponse => {
                     // 检查响应是否有效
                     if (networkResponse && networkResponse.status === 200) {
                         // 将有效的响应克隆一份存入缓存
                         cache.put(event.request, networkResponse.clone());
                     }
                     return networkResponse;
+                }).catch(error => {
+                    // 网络请求失败时提供一些反馈，防止未捕获的 Promise 拒绝
+                    console.error('Service Worker Fetch Error:', error);
+                    // 可以返回一个自定义的离线响应或继续返回 null/undefined
                 });
 
                 // 2. 如果缓存中存在，立即返回缓存的响应 (Stale)
